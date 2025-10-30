@@ -712,16 +712,34 @@
             chatInput.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Здесь подключаешь n8n
-            const n8nWebhookUrl = 'YOUR_N8N_WEBHOOK_URL';
+            // Подключение к n8n webhook
+            const n8nWebhookUrl = 'https://garrige.app.n8n.cloud/webhook/ba3120bd-a4d5-43ce-80f0-9d294f380bf2';
             
-            setTimeout(() => {
+            fetch(n8nWebhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
                 const botMessageDiv = document.createElement('div');
                 botMessageDiv.className = 'message bot';
-                botMessageDiv.innerHTML = `<div class="message-content">Thanks for your message! Connect your n8n webhook to get real responses.</div>`;
+                botMessageDiv.innerHTML = `<div class="message-content">${escapeHtml(data.response || 'Sorry, I couldn\'t process that.')}</div>`;
                 chatMessages.appendChild(botMessageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 500);
+            })
+            .catch(error => {
+                const errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'message bot';
+                errorMessageDiv.innerHTML = `<div class="message-content">Sorry, I couldn't connect. Please try again.</div>`;
+                chatMessages.appendChild(errorMessageDiv);
+                console.error('Error:', error);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
         }
 
         chatSend.addEventListener('click', sendMessage);
