@@ -349,6 +349,38 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        .chat-widget.hidden {
+            display: none;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            transition: transform 0.3s;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-toggle.show {
+            display: flex;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+        }
+
         .chat-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
@@ -619,6 +651,9 @@
         </div>
     </footer>
 
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle">💬</button>
+
     <!-- Chat Widget -->
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header">
@@ -645,14 +680,24 @@
     </div>
 
     <script>
+        const chatToggle = document.getElementById('chatToggle');
         const chatClose = document.getElementById('chatClose');
         const chatWidget = document.getElementById('chatWidget');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const chatSend = document.getElementById('chatSend');
 
+        // Открыть чат
+        chatToggle.addEventListener('click', () => {
+            chatWidget.classList.remove('hidden');
+            chatToggle.classList.remove('show');
+            chatInput.focus();
+        });
+
+        // Закрыть чат
         chatClose.addEventListener('click', () => {
-            chatWidget.style.display = 'none';
+            chatWidget.classList.add('hidden');
+            chatToggle.classList.add('show');
         });
 
         function sendMessage() {
